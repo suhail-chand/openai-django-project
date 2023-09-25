@@ -167,6 +167,10 @@ def completion(model_id, chat_session_instance, query_content, regenerate=None):
                                       openai.error.ServiceUnavailableError)) and attempt < 4:
                 time.sleep(attempt * 3)
                 continue
+
+            if not regenerate:
+                ChatQuery.objects.filter(id=current_conversation['id']).delete()
+
             raise CustomAPIException(
                 status_code=exception.http_status,
                 error_code=exception.code if exception.code else type(exception).__name__,
